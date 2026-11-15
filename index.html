@@ -47,18 +47,23 @@
       header {
         background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
         border-bottom: 2px solid var(--primary-gold);
-        padding: 2rem 1rem;
+        padding: 1.5rem 1rem;
         text-align: center;
         position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
       }
 
-      .brand-title {
-        font-family: 'Playfair Display', serif;
-        font-size: 2.8rem;
-        color: var(--primary-gold);
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 0.5rem;
+      /* Estilo para el logo oficial en el header */
+      .brand-logo {
+        max-width: 260px;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        margin-bottom: 0.4rem;
+        filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.2));
       }
 
       .brand-subtitle {
@@ -381,7 +386,10 @@
       <button class="admin-btn" id="btn-admin-modal">
         <i class="fa-solid fa-gear"></i> Panel Admin
       </button>
-      <h1 class="brand-title" id="store-title">Toxic Store</h1>
+      
+      <!-- LOGO OFICIAL DE SUPABASE EN VEZ DEL TÍTULO DE TEXTO -->
+      <img src="https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/toxic.jpg" alt="Toxic Store" class="brand-logo" id="store-logo-img" />
+      
       <p class="brand-subtitle" id="store-subtitle">
         Productos de Detailing y Limpieza Automotriz
       </p>
@@ -588,9 +596,8 @@
         let currentCategory = 'Todos';
 
         function updateUI() {
-          document.getElementById('store-title').innerText = settings.title;
           document.getElementById('footer-title').innerText = settings.title;
-          document.getElementById('doc-title').innerText = settings.title;
+          document.getElementById('doc-title').innerText = settings.title ? `${settings.title} | Limpieza y Estética Automotriz` : 'Toxic Store';
           document.getElementById('store-subtitle').innerText = settings.subtitle;
         }
 
@@ -843,7 +850,7 @@
               whatsapp: settings.whatsapp,
               instagram: settings.instagram,
               pin: settings.pin,
-              categories: categories, // Guarda las categorías personalizadas en Supabase
+              categories: categories,
               updated_at: new Date(),
             });
           }
