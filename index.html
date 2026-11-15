@@ -571,7 +571,6 @@
           pin: '200358',
         };
 
-        // Categorías iniciales predeterminadas (puedes agregar más desde el admin)
         let categories = [
           'CERAS LÍQUIDAS',
           'LAVA AUTOS',
@@ -592,7 +591,18 @@
           'MERCHANDISING'
         ];
 
-        let products = [];
+        // Producto de ejemplo inicial con tu imagen de acondicionador de Supabase
+        let products = [
+          {
+            id: 1,
+            name: 'Acondicionador de Plásticos y Cubiertas',
+            category: 'REVIVIDOR DE INTERIORES',
+            price: 12500,
+            image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/acondicionador.jpg',
+            description: 'Protección UV y acabado impecable de larga duración.'
+          }
+        ];
+
         let currentCategory = 'Todos';
 
         function updateUI() {
@@ -602,7 +612,6 @@
         }
 
         function renderCategories() {
-          // Renderizar botones de filtro superior en la tienda
           const filtersContainer = document.getElementById('category-filters');
           if (filtersContainer) {
             filtersContainer.innerHTML = `<button class="tag-btn ${currentCategory === 'Todos' ? 'active' : ''}" data-cat="Todos">Todos</button>`;
@@ -610,7 +619,6 @@
               filtersContainer.innerHTML += `<button class="tag-btn ${currentCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</button>`;
             });
 
-            // Reasignar eventos a los botones de filtro
             document.querySelectorAll('.tag-btn').forEach((btn) => {
               btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.tag-btn').forEach((b) => b.classList.remove('active'));
@@ -621,7 +629,6 @@
             });
           }
 
-          // Renderizar selector en el formulario de producto
           const selectProdCat = document.getElementById('prod-category');
           if (selectProdCat) {
             selectProdCat.innerHTML = '';
@@ -630,7 +637,6 @@
             });
           }
 
-          // Renderizar lista en el panel admin para poder eliminarlas si se desea
           const adminCatList = document.getElementById('category-list-admin');
           if (adminCatList) {
             adminCatList.innerHTML = '';
@@ -939,7 +945,7 @@
                 .select('*')
                 .order('id', { ascending: true });
 
-              if (pData) products = pData;
+              if (pData && pData.length > 0) products = pData;
             } catch (e) {
               console.warn('Error al sincronizar Supabase:', e);
             }
