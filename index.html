@@ -12,7 +12,7 @@
     />
     <!-- Google Fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap"
       rel="stylesheet"
     />
     <!-- Supabase JS Client v2 -->
@@ -22,15 +22,15 @@
 
     <style>
       :root {
-        --primary-gold: #00ff66; /* Verde Toxic principal */
-        --secondary-gold: #00cc52;
-        --light-gold: #b3ffcc;
-        --dark-bg: #0b0b0b;
-        --card-bg: #141414;
+        --primary-gold: #d4af37;
+        --secondary-gold: #aa7c11;
+        --light-gold: #f3e5ab;
+        --dark-bg: #121212;
+        --card-bg: #1e1e1e;
         --text-main: #f5f5f5;
         --text-muted: #a0a0a0;
         --white: #ffffff;
-        --border-gold: rgba(0, 255, 102, 0.3);
+        --border-gold: rgba(212, 175, 55, 0.3);
       }
 
       * {
@@ -47,7 +47,7 @@
       }
 
       header {
-        background: linear-gradient(135deg, #000000 0%, #141414 100%);
+        background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
         border-bottom: 2px solid var(--primary-gold);
         padding: 1.5rem 1rem;
         text-align: center;
@@ -65,12 +65,12 @@
         height: auto;
         object-fit: contain;
         margin-bottom: 0.4rem;
-        filter: drop-shadow(0 0 10px rgba(0, 255, 102, 0.2));
+        filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.2));
       }
 
       .brand-subtitle {
         color: var(--text-muted);
-        font-size: 0.95rem;
+        font-size: 1rem;
         font-weight: 300;
       }
 
@@ -344,7 +344,7 @@
       }
 
       .btn-edit-sm {
-        background: var(--primary-gold);
+        background: #d4af37;
         color: #000;
         border: none;
         padding: 0.4rem 0.7rem;
@@ -389,8 +389,9 @@
         <i class="fa-solid fa-gear"></i> Panel Admin
       </button>
       
-      <!-- Logo Oficial en lugar del texto -->
-      <img src="logo-toxic.png" alt="Toxic Store Neuquen" class="brand-logo" id="store-logo-img" />
+      <!-- LOGO OFICIAL EN VEZ DEL TEXTO AMARILLO -->
+      <img src="logo-toxic.jpg" alt="Toxic Store Neuquen" class="brand-logo" id="store-logo-img" />
+      
       <p class="brand-subtitle" id="store-subtitle">
         Productos de Detailing y Limpieza Automotriz
       </p>
@@ -406,7 +407,7 @@
             placeholder="Buscar productos..."
           />
         </div>
-        <!-- Filtros dinámicos -->
+        <!-- Filtros dinámicos generados automáticamente -->
         <div class="filter-tags" id="category-filters"></div>
       </div>
 
@@ -455,8 +456,8 @@
         <div id="admin-panel-sec" style="display: none">
           <h3>Ajustes de la Tienda</h3>
           <div class="form-group">
-            <label>URL del Logo (Imagen del Encabezado):</label>
-            <input type="text" id="input-store-logo" placeholder="logo-toxic.png o enlace de imagen" />
+            <label>Nombre de la Tienda / Título:</label>
+            <input type="text" id="input-store-title" />
           </div>
           <div class="form-group">
             <label>Subtítulo:</label>
@@ -480,7 +481,7 @@
 
           <hr style="border-color: var(--border-gold); margin: 1.5rem 0" />
 
-          <!-- Gestión de Separadores / Categorías Dinámicas -->
+          <!-- Gestión de Categorías / Separadores Personalizados -->
           <h3>Gestionar Separadores (Categorías)</h3>
           <div class="form-group" style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
             <input type="text" id="new-category-input" placeholder="Nueva categoría o separador" />
@@ -548,20 +549,24 @@
       document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('year').innerText = new Date().getFullYear();
 
-        const SUPABASE_URL = 'https://kukkypgdzizyghotlymc.supabase.co';
-        const SUPABASE_ANON_KEY = 'sb_publishable_WEF5vYsEBFVnkp_xA0Xr4w_F06jyD01';
+        const SUPABASE_URL = 'https://qrgqzzxgnsuubwyzbqzs.supabase.co';
+        const SUPABASE_ANON_KEY =
+          'sb_publishable_dxxj6bydsC2W9MMCl5F_7Q_AJPRqXl6';
 
         let supabaseClient = null;
         if (typeof supabase !== 'undefined') {
           try {
-            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            supabaseClient = supabase.createClient(
+              SUPABASE_URL,
+              SUPABASE_ANON_KEY
+            );
           } catch (e) {
             console.warn('Supabase no inicializado:', e);
           }
         }
 
         let settings = {
-          logo: 'logo-toxic.png', // URL o nombre del archivo de tu logo
+          title: 'Toxic Store',
           subtitle: 'Productos de Detailing y Limpieza Automotriz',
           whatsapp: '5492996099988',
           instagram: 'https://www.instagram.com/toxicstoreneuquen/',
@@ -577,11 +582,14 @@
           'LÍNEA PROFESIONAL',
           'ENVASES',
           'AEROSOLES',
+          '250',
+          'Shine',
           'MINIS',
           'PERFUMES',
           'AROMATIZANTES',
           'SELLADORES LÍQUIDOS',
           'SELLADORES CERÁMICOS',
+          'TOXIC GALLON\'S COMPANY',
           'MERCHANDISING'
         ];
 
@@ -590,10 +598,11 @@
 
         function updateUI() {
           const logoImg = document.getElementById('store-logo-img');
-          if (logoImg) logoImg.src = settings.logo || 'logo-toxic.png';
-          
-          document.getElementById('footer-title').innerText = 'Toxic Store';
-          document.getElementById('doc-title').innerText = 'Toxic Store | Detailing';
+          if (logoImg) {
+            logoImg.src = settings.logo || 'logo-toxic.jpg';
+          }
+          document.getElementById('footer-title').innerText = settings.title || 'Toxic Store';
+          document.getElementById('doc-title').innerText = settings.title ? `${settings.title} | Limpieza y Estética Automotriz` : 'Toxic Store';
           document.getElementById('store-subtitle').innerText = settings.subtitle;
         }
 
@@ -711,7 +720,7 @@
 
               container.innerHTML += `
                 <div class="product-card">
-                  <img src="${p.image_url || p.image || 'https://via.placeholder.com/300'}" class="product-img" alt="${p.name}">
+                  <img src="${p.image}" class="product-img" alt="${p.name}">
                   <div class="product-info">
                     <div style="font-size: 0.75rem; color: var(--primary-gold); margin-bottom: 0.3rem; text-transform: uppercase;">${p.category}</div>
                     <div class="product-title">${p.name}</div>
@@ -740,11 +749,10 @@
           }
 
           products.forEach((p) => {
-            const imgVal = p.image_url || p.image || '';
             adminList.innerHTML += `
               <div class="admin-prod-item">
                 <div class="admin-prod-info">
-                  <img src="${imgVal}" class="admin-prod-img" alt="${p.name}">
+                  <img src="${p.image}" class="admin-prod-img" alt="${p.name}">
                   <div>
                     <strong style="color: #fff; font-size: 0.85rem;">${p.name}</strong><br>
                     <small style="color: var(--primary-gold);">${p.category} - $${Number(p.price).toLocaleString('es-AR')}</small>
@@ -767,7 +775,7 @@
           document.getElementById('prod-name').value = prod.name;
           document.getElementById('prod-category').value = prod.category;
           document.getElementById('prod-price').value = prod.price;
-          document.getElementById('prod-img').value = prod.image_url || prod.image || '';
+          document.getElementById('prod-img').value = prod.image;
           document.getElementById('prod-desc').value = prod.description || '';
 
           document.getElementById('form-product-title').innerText = 'Modificar Producto';
@@ -824,7 +832,7 @@
             document.getElementById('admin-login-sec').style.display = 'none';
             document.getElementById('admin-panel-sec').style.display = 'block';
 
-            document.getElementById('input-store-logo').value = settings.logo;
+            document.getElementById('input-store-title').value = settings.title;
             document.getElementById('input-store-subtitle').value = settings.subtitle;
             document.getElementById('input-store-ws').value = settings.whatsapp;
             document.getElementById('input-store-ig').value = settings.instagram;
@@ -838,7 +846,7 @@
           if (supabaseClient) {
             await supabaseClient.from('store_settings').upsert({
               id: 'default',
-              title: settings.logo, // Guardamos la ruta del logo en el campo title
+              title: settings.title,
               subtitle: settings.subtitle,
               whatsapp: settings.whatsapp,
               instagram: settings.instagram,
@@ -850,7 +858,7 @@
         }
 
         document.getElementById('btn-save-settings').addEventListener('click', async () => {
-          settings.logo = document.getElementById('input-store-logo').value;
+          settings.title = document.getElementById('input-store-title').value;
           settings.subtitle = document.getElementById('input-store-subtitle').value;
           settings.whatsapp = document.getElementById('input-store-ws').value;
           settings.instagram = document.getElementById('input-store-ig').value;
@@ -868,10 +876,10 @@
           const name = document.getElementById('prod-name').value;
           const category = document.getElementById('prod-category').value;
           const price = Number(document.getElementById('prod-price').value);
-          const image_url = document.getElementById('prod-img').value;
+          const image = document.getElementById('prod-img').value;
           const description = document.getElementById('prod-desc').value;
 
-          if (!name || !price || !image_url) {
+          if (!name || !price || !image) {
             alert('Completa al menos el Nombre, Precio e Imagen.');
             return;
           }
@@ -880,7 +888,7 @@
             if (supabaseClient) {
               const { error } = await supabaseClient
                 .from('products')
-                .update({ name, category, price, image_url, description })
+                .update({ name, category, price, image, description })
                 .eq('id', editId);
 
               if (error) {
@@ -893,7 +901,7 @@
             if (supabaseClient) {
               const { error } = await supabaseClient
                 .from('products')
-                .insert([{ name, category, price, image_url, description }]);
+                .insert([{ name, category, price, image, description }]);
 
               if (error) {
                 alert('Error al guardar: ' + error.message);
@@ -919,10 +927,7 @@
                 .single();
 
               if (sData) {
-                if (sData.title) settings.logo = sData.title; // Cargamos el logo desde la base de datos
-                if (sData.subtitle) settings.subtitle = sData.subtitle;
-                if (sData.whatsapp) settings.whatsapp = sData.whatsapp;
-                if (sData.instagram) settings.instagram = sData.instagram;
+                settings = sData;
                 if (sData.categories && Array.isArray(sData.categories)) {
                   categories = sData.categories;
                 }
