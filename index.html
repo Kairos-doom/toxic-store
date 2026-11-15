@@ -20,15 +20,15 @@
 
     <style>
       :root {
-        --primary-gold: #d4af37;
-        --secondary-gold: #aa7c11;
-        --light-gold: #f3e5ab;
+        --primary-gold: #ff2a2a; /* Cambiado de amarillo a Rojo brillante */
+        --secondary-gold: #b30000; /* Rojo oscuro secundario */
+        --light-gold: #ff9999; /* Rojo claro para detalles suaves */
         --dark-bg: #121212;
         --card-bg: #1e1e1e;
         --text-main: #f5f5f5;
         --text-muted: #a0a0a0;
         --white: #ffffff;
-        --border-gold: rgba(212, 175, 55, 0.3);
+        --border-gold: rgba(255, 42, 42, 0.3); /* Borde rojo sutil */
       }
 
       * {
@@ -63,7 +63,7 @@
         height: auto;
         object-fit: contain;
         margin-bottom: 0.4rem;
-        filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.2));
+        filter: drop-shadow(0 0 8px rgba(255, 42, 42, 0.3));
       }
 
       .brand-subtitle {
@@ -88,7 +88,7 @@
 
       .admin-btn:hover {
         background: var(--primary-gold);
-        color: #000;
+        color: #fff;
       }
 
       .container {
@@ -155,7 +155,7 @@
 
       .tag-btn.active {
         background: var(--primary-gold);
-        color: #000;
+        color: #fff;
         font-weight: 600;
       }
 
@@ -293,7 +293,7 @@
       .submit-btn {
         width: 100%;
         background: var(--primary-gold);
-        color: black;
+        color: white;
         font-weight: bold;
         padding: 0.8rem;
         border: none;
@@ -342,8 +342,8 @@
       }
 
       .btn-edit-sm {
-        background: #d4af37;
-        color: #000;
+        background: var(--primary-gold);
+        color: #fff;
         border: none;
         padding: 0.4rem 0.7rem;
         border-radius: 4px;
@@ -387,7 +387,7 @@
         <i class="fa-solid fa-gear"></i> Panel Admin
       </button>
       
-      <!-- LOGO OFICIAL DE SUPABASE EN VEZ DEL TÍTULO DE TEXTO -->
+      <!-- LOGO OFICIAL DE SUPABASE -->
       <img src="https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/toxic.jpg" alt="Toxic Store" class="brand-logo" id="store-logo-img" />
       
       <p class="brand-subtitle" id="store-subtitle">
