@@ -591,16 +591,41 @@
           'MERCHANDISING'
         ];
 
-        // Producto de ejemplo inicial con tu imagen de acondicionador de Supabase
+        // Lista completa de productos únicos con todas tus imágenes y precio 11
         let products = [
-          {
-            id: 1,
-            name: 'Acondicionador de Plásticos y Cubiertas',
-            category: 'REVIVIDOR DE INTERIORES',
-            price: 12500,
-            image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/acondicionador.jpg',
-            description: 'Protección UV y acabado impecable de larga duración.'
-          }
+          { id: 1, name: 'Aromatizante', category: 'AROMATIZANTES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/aromatisante.jpg', description: 'Aromatizante oficial Toxic Store.' },
+          { id: 2, name: 'Acondicionador de Plásticos', category: 'REVIVIDOR DE INTERIORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/acondicionador.jpg', description: 'Protección y acabado impecable.' },
+          { id: 3, name: 'Brocha de Detailing', category: 'MERCHANDISING', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/brocha.jpg', description: 'Ideal para lugares difíciles.' },
+          { id: 4, name: 'Bug Remover', category: 'LIMPIADORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/bug.jpg', description: 'Remoción segura de insectos.' },
+          { id: 5, name: 'Burble', category: 'LÍNEA PROFESIONAL', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Burble.jpg', description: 'Línea profesional Toxic.' },
+          { id: 6, name: 'Cherry Wax', category: 'CERAS LÍQUIDAS', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Cherry.jpg', description: 'Brillo excepcional y aroma cereza.' },
+          { id: 7, name: 'Combo Especial', category: 'LÍNEA PROFESIONAL', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/combo.jpg', description: 'Kit completo de detailing.' },
+          { id: 8, name: 'Estuche Toxic', category: 'MERCHANDISING', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/estuche.jpg', description: 'Estuche organizador.' },
+          { id: 9, name: 'Gel Cubiertas', category: 'REVITALIZADOR DE EXTERIORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Gel.jpg', description: 'Alto rendimiento y duración.' },
+          { id: 10, name: 'Laffitte', category: 'PERFUMES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Laffitte.jpg', description: 'Perfume vehicular exclusivo.' },
+          { id: 11, name: 'Multiuso Limpiador', category: 'LIMPIADORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/multi.jpg', description: 'Limpiador multipropósito.' },
+          { id: 12, name: 'Overcars', category: 'LÍNEA PROFESIONAL', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Overcars.jpg', description: 'Línea de alta gama.' },
+          { id: 13, name: 'Paño Microfibra', category: 'MERCHANDISING', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/trapo.jpg', description: 'Microfibra suave sin bordes.' },
+          { id: 14, name: 'Undercoating', category: 'REVITALIZADOR DE EXTERIORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/under.jpg', description: 'Protección de bajos.' },
+          { id: 15, name: 'Aroma Uva', category: 'AROMATIZANTES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/uva.jpg', description: 'Aromatizante fragancia uva.' },
+          { id: 16, name: 'Acondicionador de Interiores', category: 'REVIVIDOR DE INTERIORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Acondicionador%20interiores.jpg', description: 'Nutrición para plásticos internos.' },
+          { id: 17, name: 'Aromatizante Clásico', category: 'AROMATIZANTES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Aromatizante.jpg', description: 'Frescura duradera.' },
+          { id: 18, name: 'Back To Black', category: 'REVITALIZADOR DE EXTERIORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Back%20To%20Black.jpg', description: 'Devuelve el negro original.' },
+          { id: 19, name: 'Combo 3 Productos', category: 'LÍNEA PROFESIONAL', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Combo%203.jpg', description: 'Set x3 esenciales.' },
+          { id: 20, name: 'Combo 4 Trapos', category: 'MERCHANDISING', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Combo%204%20Trapos.jpg', description: 'Pack de microfibras.' },
+          { id: 21, name: 'Combo 4', category: 'LÍNEA PROFESIONAL', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Combo%204.jpg', description: 'Kit de lavado y protección.' },
+          { id: 22, name: 'Combo 5', category: 'LÍNEA PROFESIONAL', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Combo%205.jpg', description: 'Set avanzado detailing.' },
+          { id: 23, name: 'Combo 6', category: 'LÍNEA PROFESIONAL', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Combo%206.jpg', description: 'Kit completo profesional.' },
+          { id: 24, name: 'Especial Cosa', category: 'LÍNEA PROFESIONAL', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Cosa.jpg', description: 'Producto especial Toxic.' },
+          { id: 25, name: 'Cristal Titanium', category: 'SELLADORES CERÁMICOS', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Cristal%20titanium.jpg', description: 'Protección cerámica para cristales.' },
+          { id: 26, name: 'Limpiador de Llantas', category: 'LIMPIADORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Limpiador%20de%20llantas.jpg', description: 'Descontaminante ferroso y de llantas.' },
+          { id: 27, name: 'Limpiador de Vidrios', category: 'LIMPIADORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Limpiador%20de%20vidrios.jpg', description: 'Transparencia sin marcas.' },
+          { id: 28, name: 'Limpiador de Interiores', category: 'REVIVIDOR DE INTERIORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Limpiador%20interiores.jpg', description: 'Limpieza profunda de tapizados y plásticos.' },
+          { id: 29, name: 'Multiuso Pro', category: 'LIMPIADORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Multiuso.jpg', description: 'APC concentrado.' },
+          { id: 30, name: 'Revitalizador', category: 'REVITALIZADOR DE EXTERIORES', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Revitalizador.jpg', description: 'Revitalizador de autopartes externas.' },
+          { id: 31, name: 'Tratamientos', category: 'SELLADORES LÍQUIDOS', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/tratamientos.jpg', description: 'Tratamiento acrílico/cerámico.' },
+          { id: 32, name: 'Utilería Detailing', category: 'MERCHANDISING', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/Utiletia.jpg', description: 'Accesorios útiles para el taller.' },
+          { id: 33, name: 'V-Paint', category: 'SELLADORES CERÁMICOS', price: 11, image: 'https://qrgqzzxgnsuubwyzbqzs.supabase.co/storage/v1/object/public/Productos/V-Paint.jpg', description: 'Revestimiento cerámico para pintura.' }
         ];
 
         let currentCategory = 'Todos';
