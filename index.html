@@ -17,8 +17,6 @@
     />
     <!-- Supabase JS Client v2 -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- PWA Manifest Link -->
-    <link rel="manifest" href="/manifest.json">
 
     <style>
       :root {
@@ -49,28 +47,23 @@
       header {
         background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
         border-bottom: 2px solid var(--primary-gold);
-        padding: 1.5rem 1rem;
+        padding: 2rem 1rem;
         text-align: center;
         position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
       }
 
-      /* Estilo para el Logo en el Header */
-      .brand-logo {
-        max-width: 280px;
-        width: 100%;
-        height: auto;
-        object-fit: contain;
-        margin-bottom: 0.4rem;
-        filter: drop-shadow(0 0 10px rgba(212, 175, 55, 0.2));
+      .brand-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: var(--primary-gold);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 0.5rem;
       }
 
       .brand-subtitle {
         color: var(--text-muted);
-        font-size: 1rem;
+        font-size: 1.1rem;
         font-weight: 300;
       }
 
@@ -388,10 +381,7 @@
       <button class="admin-btn" id="btn-admin-modal">
         <i class="fa-solid fa-gear"></i> Panel Admin
       </button>
-      
-      <!-- LOGO OFICIAL EN VEZ DEL TEXTO AMARILLO -->
-      <img src="logo-toxic.jpg" alt="Toxic Store Neuquen" class="brand-logo" id="store-logo-img" />
-      
+      <h1 class="brand-title" id="store-title">Toxic Store</h1>
       <p class="brand-subtitle" id="store-subtitle">
         Productos de Detailing y Limpieza Automotriz
       </p>
@@ -456,7 +446,7 @@
         <div id="admin-panel-sec" style="display: none">
           <h3>Ajustes de la Tienda</h3>
           <div class="form-group">
-            <label>Nombre de la Tienda / Título:</label>
+            <label>Nombre de la Tienda:</label>
             <input type="text" id="input-store-title" />
           </div>
           <div class="form-group">
@@ -573,6 +563,7 @@
           pin: '200358',
         };
 
+        // Categorías iniciales predeterminadas (puedes agregar más desde el admin)
         let categories = [
           'CERAS LÍQUIDAS',
           'LAVA AUTOS',
@@ -597,16 +588,14 @@
         let currentCategory = 'Todos';
 
         function updateUI() {
-          const logoImg = document.getElementById('store-logo-img');
-          if (logoImg) {
-            logoImg.src = settings.logo || 'logo-toxic.jpg';
-          }
-          document.getElementById('footer-title').innerText = settings.title || 'Toxic Store';
-          document.getElementById('doc-title').innerText = settings.title ? `${settings.title} | Limpieza y Estética Automotriz` : 'Toxic Store';
+          document.getElementById('store-title').innerText = settings.title;
+          document.getElementById('footer-title').innerText = settings.title;
+          document.getElementById('doc-title').innerText = settings.title;
           document.getElementById('store-subtitle').innerText = settings.subtitle;
         }
 
         function renderCategories() {
+          // Renderizar botones de filtro superior en la tienda
           const filtersContainer = document.getElementById('category-filters');
           if (filtersContainer) {
             filtersContainer.innerHTML = `<button class="tag-btn ${currentCategory === 'Todos' ? 'active' : ''}" data-cat="Todos">Todos</button>`;
@@ -614,6 +603,7 @@
               filtersContainer.innerHTML += `<button class="tag-btn ${currentCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</button>`;
             });
 
+            // Reasignar eventos a los botones de filtro
             document.querySelectorAll('.tag-btn').forEach((btn) => {
               btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.tag-btn').forEach((b) => b.classList.remove('active'));
@@ -624,6 +614,7 @@
             });
           }
 
+          // Renderizar selector en el formulario de producto
           const selectProdCat = document.getElementById('prod-category');
           if (selectProdCat) {
             selectProdCat.innerHTML = '';
@@ -632,6 +623,7 @@
             });
           }
 
+          // Renderizar lista en el panel admin para poder eliminarlas si se desea
           const adminCatList = document.getElementById('category-list-admin');
           if (adminCatList) {
             adminCatList.innerHTML = '';
@@ -851,7 +843,7 @@
               whatsapp: settings.whatsapp,
               instagram: settings.instagram,
               pin: settings.pin,
-              categories: categories,
+              categories: categories, // Guarda las categorías personalizadas en Supabase
               updated_at: new Date(),
             });
           }
