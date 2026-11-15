@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title id="doc-title">Toxic Store | Limpieza y Estética Automotriz</title>
+
+    <!-- FontAwesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Supabase JS Client v2 -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- PWA Manifest Link -->
+    <link rel="manifest" href="/manifest.json">
+
+    <style>
+      :root {
+        --primary-gold: #00ff66; /* Verde Toxic principal */
+        --secondary-gold: #00cc52;
+        --light-gold: #b3ffcc;
+        --dark-bg: #0b0b0b;
+        --card-bg: #141414;
+        --text-main: #f5f5f5;
+        --text-muted: #a0a0a0;
+        --white: #ffffff;
+        --border-gold: rgba(0, 255, 102, 0.3);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: 'Montserrat', sans-serif;
+      }
+
+      body {
+        background-color: var(--dark-bg);
+        color: var(--text-main);
+        line-height: 1.6;
+      }
+
+      header {
+        background: linear-gradient(135deg, #000000 0%, #141414 100%);
+        border-bottom: 2px solid var(--primary-gold);
+        padding: 2rem 1rem;
+        text-align: center;
+        position: relative;
+      }
+
+      .brand-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.8rem;
+        color: var(--primary-gold);
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 0.5rem;
+        text-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+      }
+
+      .brand-subtitle {
+        color: var(--text-muted);
+        font-size: 1.1rem;
+        font-weight: 300;
+      }
+
+      .admin-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: transparent;
+        border: 1px solid var(--border-gold);
+        color: var(--primary-gold);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 10;
+      }
+
+      .admin-btn:hover {
+        background: var(--primary-gold);
+        color: #000;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .controls {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .search-bar {
+        position: relative;
+        width: 100%;
+      }
+
+      .search-bar input {
+        width: 100%;
+        padding: 0.8rem 1rem 0.8rem 2.5rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border-gold);
+        border-radius: 8px;
+        color: var(--text-main);
+      }
+
+      .search-bar i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--primary-gold);
+      }
+
+      .filter-tags {
+        display: flex;
+        gap: 0.5rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+        white-space: nowrap;
+      }
+
+      .filter-tags::-webkit-scrollbar {
+        height: 6px;
+      }
+
+      .filter-tags::-webkit-scrollbar-thumb {
+        background: var(--primary-gold);
+        border-radius: 3px;
+      }
+
+      .tag-btn {
+        background: var(--card-bg);
+        border: 1px solid var(--border-gold);
+        color: var(--text-main);
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 0.85rem;
+      }
+
+      .tag-btn.active {
+        background: var(--primary-gold);
+        color: #000;
+        font-weight: 600;
+      }
+
+      .products-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .product-card {
+        background: var(--card-bg);
+        border: 1px solid var(--border-gold);
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        transition: transform 0.3s ease;
+      }
+
+      .product-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .product-img {
+        width: 100%;
+        height: 220px;
+        object-fit: cover;
+        background: #222;
+      }
+
+      .product-info {
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
+      .product-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--white);
+      }
+
+      .product-desc {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+        flex: 1;
+      }
+
+      .product-price {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--primary-gold);
+        margin-bottom: 1rem;
+      }
+
+      .buy-btn {
+        width: 100%;
+        background: #25d366;
+        color: white;
+        border: none;
+        padding: 0.8rem;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-decoration: none;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        padding: 1rem;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: var(--card-bg);
+        border: 1px solid var(--primary-gold);
+        padding: 2rem;
+        border-radius: 12px;
+        max-width: 600px;
+        width: 100%;
+        max-height: 90vh;
+        overflow-y: auto;
+        position: relative;
+      }
+
+      .close-btn {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 1.8rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.2rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.4rem;
+        color: var(--primary-gold);
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        background: #121212;
+        border: 1px solid var(--border-gold);
+        color: white;
+        border-radius: 6px;
+      }
+
+      .submit-btn {
+        width: 100%;
+        background: var(--primary-gold);
+        color: black;
+        font-weight: bold;
+        padding: 0.8rem;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      .admin-prod-list {
+        margin-top: 1rem;
+        max-height: 200px;
+        overflow-y: auto;
+        border: 1px solid var(--border-gold);
+        border-radius: 6px;
+        padding: 0.5rem;
+        background: #121212;
+      }
+
+      .admin-prod-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.6rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .admin-prod-item:last-child {
+        border-bottom: none;
+      }
+
+      .admin-prod-info {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+      }
+
+      .admin-prod-img {
+        width: 40px;
+        height: 40px;
+        border-radius: 4px;
+        object-fit: cover;
+      }
+
+      .admin-actions {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .btn-edit-sm {
+        background: var(--primary-gold);
+        color: #000;
+        border: none;
+        padding: 0.4rem 0.7rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.8rem;
+      }
+
+      .btn-delete-sm {
+        background: #e74c3c;
+        color: #fff;
+        border: none;
+        padding: 0.4rem 0.7rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.8rem;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem;
+        margin-top: 3rem;
+        border-top: 1px solid var(--border-gold);
+        color: var(--text-muted);
+      }
+
+      footer button {
+        background: transparent;
+        border: none;
+        color: var(--primary-gold);
+        font-size: 1rem;
+        cursor: pointer;
+        margin: 0 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <button class="admin-btn" id="btn-admin-modal">
+        <i class="fa-solid fa-gear"></i> Panel Admin
+      </button>
+      <h1 class="brand-title" id="store-title">Toxic Store</h1>
+      <p class="brand-subtitle" id="store-subtitle">
+        Productos de Detailing y Limpieza Automotriz
+      </p>
+    </header>
+
+    <div class="container">
+      <div class="controls">
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Buscar productos..."
+          />
+        </div>
+        <!-- Filtros dinámicos -->
+        <div class="filter-tags" id="category-filters"></div>
+      </div>
+
+      <div class="products-grid" id="products-container"></div>
+    </div>
+
+    <footer>
+      <p>
+        &copy; <span id="year"></span>
+        <span id="footer-title">Toxic Store</span>. Todos los derechos
+        reservados.
+      </p>
+      <p style="margin-top: 0.5rem">
+        <button id="btn-open-ig">
+          <i class="fa-brands fa-instagram"></i> Instagram
+        </button>
+        |
+        <button id="btn-open-ws">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp
+        </button>
+      </p>
+    </footer>
+
+    <!-- Modal Admin -->
+    <div class="modal" id="modal-admin">
+      <div class="modal-content">
+        <span class="close-btn" id="close-admin-modal">&times;</span>
+        <h2 style="color: var(--primary-gold); margin-bottom: 1rem">
+          Administración
+        </h2>
+
+        <div id="admin-login-sec">
+          <form id="form-login" onsubmit="event.preventDefault(); verifyPin();">
+            <div class="form-group">
+              <label>Ingrese PIN de Administrador:</label>
+              <input
+                type="password"
+                id="admin-pin"
+                placeholder="Escribir PIN y presionar Enter"
+              />
+            </div>
+            <button type="submit" class="submit-btn">Ingresar</button>
+          </form>
+        </div>
+
+        <div id="admin-panel-sec" style="display: none">
+          <h3>Ajustes de la Tienda</h3>
+          <div class="form-group">
+            <label>Nombre de la Tienda:</label>
+            <input type="text" id="input-store-title" />
+          </div>
+          <div class="form-group">
+            <label>Subtítulo:</label>
+            <input type="text" id="input-store-subtitle" />
+          </div>
+          <div class="form-group">
+            <label>Número WhatsApp:</label>
+            <input type="text" id="input-store-ws" />
+          </div>
+          <div class="form-group">
+            <label>Enlace Instagram:</label>
+            <input type="text" id="input-store-ig" />
+          </div>
+          <button
+            class="submit-btn"
+            style="margin-bottom: 1.5rem"
+            id="btn-save-settings"
+          >
+            Guardar Ajustes
+          </button>
+
+          <hr style="border-color: var(--border-gold); margin: 1.5rem 0" />
+
+          <!-- Gestión de Separadores / Categorías Dinámicas -->
+          <h3>Gestionar Separadores (Categorías)</h3>
+          <div class="form-group" style="display: flex; gap: 0.5rem; margin-top: 0.5rem;">
+            <input type="text" id="new-category-input" placeholder="Nueva categoría o separador" />
+            <button type="button" class="submit-btn" style="width: auto; padding: 0 1rem;" onclick="addCategory()">Añadir</button>
+          </div>
+          <div id="category-list-admin" style="margin-bottom: 1.5rem; max-height: 120px; overflow-y: auto; background: #121212; border: 1px solid var(--border-gold); padding: 0.5rem; border-radius: 6px;"></div>
+
+          <hr style="border-color: var(--border-gold); margin: 1.5rem 0" />
+
+          <h3 id="form-product-title">Agregar / Editar Producto</h3>
+          <form
+            id="form-product"
+            onsubmit="event.preventDefault(); saveProduct();"
+          >
+            <input type="hidden" id="prod-id-edit" value="" />
+            <div class="form-group">
+              <label>Nombre del Producto:</label>
+              <input type="text" id="prod-name" required />
+            </div>
+            <div class="form-group">
+              <label>Categoría Oficial:</label>
+              <select id="prod-category"></select>
+            </div>
+            <div class="form-group">
+              <label>Precio ($):</label>
+              <input type="number" id="prod-price" required />
+            </div>
+            <div class="form-group">
+              <label>URL Imagen:</label>
+              <input
+                type="text"
+                id="prod-img"
+                placeholder="https://ejemplo.com/imagen.jpg"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Descripción:</label>
+              <textarea id="prod-desc" rows="2"></textarea>
+            </div>
+            <div style="display: flex; gap: 0.5rem">
+              <button type="submit" class="submit-btn" id="btn-save-product">
+                Guardar Producto
+              </button>
+              <button
+                type="button"
+                class="submit-btn"
+                id="btn-cancel-edit"
+                style="background: #555; color: #fff; display: none"
+              >
+                Cancelar
+              </button>
+            </div>
+          </form>
+
+          <hr style="border-color: var(--border-gold); margin: 1.5rem 0" />
+
+          <h3>Inventario Actual</h3>
+          <div class="admin-prod-list" id="admin-product-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('year').innerText = new Date().getFullYear();
+
+        // Conexión oficial a Supabase con tus nuevas credenciales
+        const SUPABASE_URL = 'https://kukkypgdzizyghotlymc.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_WEF5vYsEBFVnkp_xA0Xr4w_F06jyD01';
+
+        let supabaseClient = null;
+        if (typeof supabase !== 'undefined') {
+          try {
+            supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            console.log("Supabase conectado en Toxic Store");
+          } catch (e) {
+            console.warn('Supabase no inicializado:', e);
+          }
+        }
+
+        let settings = {
+          title: 'Toxic Store',
+          subtitle: 'Productos de Detailing y Limpieza Automotriz',
+          whatsapp: '5492996099988',
+          instagram: 'https://www.instagram.com/toxicstoreneuquen/',
+          pin: '200358',
+        };
+
+        let categories = [
+          'CERAS LÍQUIDAS',
+          'LAVA AUTOS',
+          'LIMPIADORES',
+          'REVIVIDOR DE INTERIORES',
+          'REVITALIZADOR DE EXTERIORES',
+          'LÍNEA PROFESIONAL',
+          'ENVASES',
+          'AEROSOLES',
+          'MINIS',
+          'PERFUMES',
+          'AROMATIZANTES',
+          'SELLADORES LÍQUIDOS',
+          'SELLADORES CERÁMICOS',
+          'MERCHANDISING'
+        ];
+
+        let products = [];
+        let currentCategory = 'Todos';
+
+        function updateUI() {
+          document.getElementById('store-title').innerText = settings.title;
+          document.getElementById('footer-title').innerText = settings.title;
+          document.getElementById('doc-title').innerText = settings.title;
+          document.getElementById('store-subtitle').innerText = settings.subtitle;
+        }
+
+        function renderCategories() {
+          const filtersContainer = document.getElementById('category-filters');
+          if (filtersContainer) {
+            filtersContainer.innerHTML = `<button class="tag-btn ${currentCategory === 'Todos' ? 'active' : ''}" data-cat="Todos">Todos</button>`;
+            categories.forEach(cat => {
+              filtersContainer.innerHTML += `<button class="tag-btn ${currentCategory === cat ? 'active' : ''}" data-cat="${cat}">${cat}</button>`;
+            });
+
+            document.querySelectorAll('.tag-btn').forEach((btn) => {
+              btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.tag-btn').forEach((b) => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentCategory = e.target.getAttribute('data-cat');
+                renderProducts();
+              });
+            });
+          }
+
+          const selectProdCat = document.getElementById('prod-category');
+          if (selectProdCat) {
+            selectProdCat.innerHTML = '';
+            categories.forEach(cat => {
+              selectProdCat.innerHTML += `<option value="${cat}">${cat}</option>`;
+            });
+          }
+
+          const adminCatList = document.getElementById('category-list-admin');
+          if (adminCatList) {
+            adminCatList.innerHTML = '';
+            categories.forEach(cat => {
+              adminCatList.innerHTML += `
+                <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.3rem 0; border-bottom: 1px solid rgba(255,255,255,0.05);">
+                  <span style="font-size: 0.85rem; color: #fff;">${cat}</span>
+                  <button type="button" onclick="removeCategory('${cat}')" style="background: #e74c3c; color: #fff; border: none; padding: 0.2rem 0.5rem; border-radius: 4px; cursor: pointer; font-size: 0.75rem;"><i class="fa-solid fa-trash"></i></button>
+                </div>
+              `;
+            });
+          }
+        }
+
+        window.addCategory = function() {
+          const input = document.getElementById('new-category-input');
+          const val = input.value.trim().toUpperCase();
+          if (!val) return;
+          if (categories.includes(val)) {
+            alert('Ese separador ya existe.');
+            return;
+          }
+          categories.push(val);
+          input.value = '';
+          renderCategories();
+          saveSettingsToSupabase();
+          alert('¡Separador añadido con éxito!');
+        };
+
+        window.removeCategory = function(catName) {
+          if (categories.length <= 1) {
+            alert('Debes tener al menos un separador.');
+            return;
+          }
+          if (!confirm(`¿Eliminar el separador "${catName}"?`)) return;
+          categories = categories.filter(c => c !== catName);
+          if (currentCategory === catName) currentCategory = 'Todos';
+          renderCategories();
+          renderProducts();
+          saveSettingsToSupabase();
+        };
+
+        function openExternalUrl(url) {
+          if (!url) return;
+          let target = url.trim();
+          if (!target.startsWith('http://') && !target.startsWith('https://')) {
+            target = 'https://' + target;
+          }
+          window.open(target, '_blank');
+        }
+
+        document.getElementById('btn-open-ig').addEventListener('click', () => {
+          openExternalUrl(settings.instagram);
+        });
+
+        document.getElementById('btn-open-ws').addEventListener('click', () => {
+          const cleanWs = String(settings.whatsapp).replace(/[^0-9]/g, '');
+          window.open(`https://wa.me/${cleanWs}`, '_blank');
+        });
+
+        function renderProducts() {
+          const container = document.getElementById('products-container');
+          const searchInput = document.getElementById('search-input');
+          const search = searchInput ? searchInput.value.toLowerCase() : '';
+
+          container.innerHTML = '';
+
+          const filtered = products.filter((p) => {
+            const matchesCat = currentCategory === 'Todos' || p.category === currentCategory;
+            const matchesSearch =
+              p.name.toLowerCase().includes(search) ||
+              (p.description && p.description.toLowerCase().includes(search));
+            return matchesCat && matchesSearch;
+          });
+
+          if (filtered.length === 0) {
+            container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 2rem;">No hay productos para mostrar en esta categoría.</p>`;
+          } else {
+            const cleanWs = String(settings.whatsapp).replace(/[^0-9]/g, '');
+
+            filtered.forEach((p) => {
+              const message = encodeURIComponent(
+                `Hola! Quiero consultar por el producto: ${p.name} ($${p.price})`
+              );
+              const wsLink = `https://wa.me/${cleanWs}?text=${message}`;
+
+              container.innerHTML += `
+                <div class="product-card">
+                  <img src="${p.image_url || p.image || 'https://via.placeholder.com/300'}" class="product-img" alt="${p.name}">
+                  <div class="product-info">
+                    <div style="font-size: 0.75rem; color: var(--primary-gold); margin-bottom: 0.3rem; text-transform: uppercase;">${p.category}</div>
+                    <div class="product-title">${p.name}</div>
+                    <div class="product-desc">${p.description || ''}</div>
+                    <div class="product-price">$${Number(p.price).toLocaleString('es-AR')}</div>
+                    <button onclick="window.open('${wsLink}', '_blank')" class="buy-btn">
+                      <i class="fa-brands fa-whatsapp"></i> Consultar
+                    </button>
+                  </div>
+                </div>
+              `;
+            });
+          }
+
+          renderAdminProductList();
+        }
+
+        function renderAdminProductList() {
+          const adminList = document.getElementById('admin-product-list');
+          if (!adminList) return;
+
+          adminList.innerHTML = '';
+          if (products.length === 0) {
+            adminList.innerHTML = `<p style="color: var(--text-muted); text-align: center; padding: 0.5rem;">Sin productos.</p>`;
+            return;
+          }
+
+          products.forEach((p) => {
+            const imgVal = p.image_url || p.image || '';
+            adminList.innerHTML += `
+              <div class="admin-prod-item">
+                <div class="admin-prod-info">
+                  <img src="${imgVal}" class="admin-prod-img" alt="${p.name}">
+                  <div>
+                    <strong style="color: #fff; font-size: 0.85rem;">${p.name}</strong><br>
+                    <small style="color: var(--primary-gold);">${p.category} - $${Number(p.price).toLocaleString('es-AR')}</small>
+                  </div>
+                </div>
+                <div class="admin-actions">
+                  <button class="btn-edit-sm" onclick="editProduct('${p.id}')"><i class="fa-solid fa-pen"></i></button>
+                  <button class="btn-delete-sm" onclick="deleteProduct('${p.id}')"><i class="fa-solid fa-trash"></i></button>
+                </div>
+              </div>
+            `;
+          });
+        }
+
+        window.editProduct = function (id) {
+          const prod = products.find((p) => String(p.id) === String(id));
+          if (!prod) return;
+
+          document.getElementById('prod-id-edit').value = prod.id;
+          document.getElementById('prod-name').value = prod.name;
+          document.getElementById('prod-category').value = prod.category;
+          document.getElementById('prod-price').value = prod.price;
+          document.getElementById('prod-img').value = prod.image_url || prod.image || '';
+          document.getElementById('prod-desc').value = prod.description || '';
+
+          document.getElementById('form-product-title').innerText = 'Modificar Producto';
+          document.getElementById('btn-save-product').innerText = 'Actualizar Producto';
+          document.getElementById('btn-cancel-edit').style.display = 'block';
+        };
+
+        window.deleteProduct = async function (id) {
+          if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+
+          if (supabaseClient) {
+            const { error } = await supabaseClient.from('products').delete().eq('id', id);
+            if (error) {
+              alert('Error al eliminar en Supabase: ' + error.message);
+              return;
+            }
+          }
+
+          products = products.filter((p) => String(p.id) !== String(id));
+          alert('Producto eliminado correctamente.');
+          syncSupabase();
+        };
+
+        document.getElementById('btn-cancel-edit').addEventListener('click', () => {
+          resetForm();
+        });
+
+        function resetForm() {
+          document.getElementById('prod-id-edit').value = '';
+          document.getElementById('prod-name').value = '';
+          document.getElementById('prod-price').value = '';
+          document.getElementById('prod-img').value = '';
+          document.getElementById('prod-desc').value = '';
+
+          document.getElementById('form-product-title').innerText = 'Agregar / Editar Producto';
+          document.getElementById('btn-save-product').innerText = 'Guardar Producto';
+          document.getElementById('btn-cancel-edit').style.display = 'none';
+        }
+
+        document.getElementById('btn-admin-modal').addEventListener('click', () => {
+          document.getElementById('modal-admin').classList.add('active');
+          document.getElementById('admin-pin').focus();
+        });
+
+        document.getElementById('close-admin-modal').addEventListener('click', () => {
+          document.getElementById('modal-admin').classList.remove('active');
+          document.getElementById('admin-pin').value = '';
+          resetForm();
+        });
+
+        window.verifyPin = function () {
+          const pinInput = document.getElementById('admin-pin').value;
+          if (pinInput === settings.pin) {
+            document.getElementById('admin-login-sec').style.display = 'none';
+            document.getElementById('admin-panel-sec').style.display = 'block';
+
+            document.getElementById('input-store-title').value = settings.title;
+            document.getElementById('input-store-subtitle').value = settings.subtitle;
+            document.getElementById('input-store-ws').value = settings.whatsapp;
+            document.getElementById('input-store-ig').value = settings.instagram;
+            renderCategories();
+          } else {
+            alert('PIN incorrecto.');
+          }
+        };
+
+        async function saveSettingsToSupabase() {
+          if (supabaseClient) {
+            await supabaseClient.from('store_settings').upsert({
+              id: 'default',
+              title: settings.title,
+              subtitle: settings.subtitle,
+              whatsapp: settings.whatsapp,
+              instagram: settings.instagram,
+              pin: settings.pin,
+              categories: categories,
+              updated_at: new Date(),
+            });
+          }
+        }
+
+        document.getElementById('btn-save-settings').addEventListener('click', async () => {
+          settings.title = document.getElementById('input-store-title').value;
+          settings.subtitle = document.getElementById('input-store-subtitle').value;
+          settings.whatsapp = document.getElementById('input-store-ws').value;
+          settings.instagram = document.getElementById('input-store-ig').value;
+
+          await saveSettingsToSupabase();
+
+          alert('¡Ajustes guardados correctamente!');
+          updateUI();
+          document.getElementById('modal-admin').classList.remove('active');
+          syncSupabase();
+        });
+
+        window.saveProduct = async function () {
+          const editId = document.getElementById('prod-id-edit').value;
+          const name = document.getElementById('prod-name').value;
+          const category = document.getElementById('prod-category').value;
+          const price = Number(document.getElementById('prod-price').value);
+          const image_url = document.getElementById('prod-img').value;
+          const description = document.getElementById('prod-desc').value;
+
+          if (!name || !price || !image_url) {
+            alert('Completa al menos el Nombre, Precio e Imagen.');
+            return;
+          }
+
+          if (editId) {
+            if (supabaseClient) {
+              const { error } = await supabaseClient
+                .from('products')
+                .update({ name, category, price, image_url, description })
+                .eq('id', editId);
+
+              if (error) {
+                alert('Error al actualizar: ' + error.message);
+                return;
+              }
+            }
+            alert('¡Producto actualizado exitosamente!');
+          } else {
+            if (supabaseClient) {
+              const { error } = await supabaseClient
+                .from('products')
+                .insert([{ name, category, price, image_url, description }]);
+
+              if (error) {
+                alert('Error al guardar: ' + error.message);
+                return;
+              }
+            }
+            alert('¡Producto guardado exitosamente!');
+          }
+
+          resetForm();
+          syncSupabase();
+        };
+
+        document.getElementById('search-input').addEventListener('input', renderProducts);
+
+        async function syncSupabase() {
+          if (supabaseClient) {
+            try {
+              const { data: sData } = await supabaseClient
+                .from('store_settings')
+                .select('*')
+                .eq('id', 'default')
+                .single();
+
+              if (sData) {
+                settings = sData;
+                if (sData.categories && Array.isArray(sData.categories)) {
+                  categories = sData.categories;
+                }
+              }
+              updateUI();
+              renderCategories();
+
+              const { data: pData } = await supabaseClient
+                .from('products')
+                .select('*')
+                .order('id', { ascending: true });
+
+              if (pData) products = pData;
+            } catch (e) {
+              console.warn('Error al sincronizar Supabase:', e);
+            }
+          }
+          renderCategories();
+          renderProducts();
+        }
+
+        updateUI();
+        syncSupabase();
+      });
+    </script>
+  </body>
+</html>
