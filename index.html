@@ -72,7 +72,9 @@
         font-weight: 300;
       }
 
+      /* Oculto por defecto; se activa con Ctrl + Shift + Z */
       .admin-btn {
+        display: none !important;
         position: absolute;
         top: 1rem;
         right: 1rem;
@@ -383,7 +385,7 @@
   </head>
   <body>
     <header>
-      <button class="admin-btn" id="btn-admin-modal">
+      <button class="admin-btn" id="btn-admin-modal" style="display: none;">
         <i class="fa-solid fa-gear"></i> Panel Admin
       </button>
       
@@ -630,6 +632,55 @@
 
         let currentCategory = 'Todos';
 
+        // --- ACTIVACIÓN DEL PANEL ADMIN CON CTRL + SHIFT + Z ---
+        const adminBtn = document.getElementById('btn-admin-modal');
+        const modalAdmin = document.getElementById('modal-admin');
+        const adminPinInput = document.getElementById('admin-pin');
+
+        if (adminBtn) {
+          adminBtn.style.setProperty('display', 'none', 'important');
+        }
+
+        function openAdminModal() {
+          if (!modalAdmin) return;
+          modalAdmin.classList.add('active');
+          if (adminPinInput) {
+            setTimeout(() => adminPinInput.focus(), 50);
+          }
+        }
+
+        function closeAdminModal() {
+          if (!modalAdmin) return;
+          modalAdmin.classList.remove('active');
+          if (adminPinInput) adminPinInput.value = '';
+          resetForm();
+        }
+
+        window.addEventListener(
+          'keydown',
+          (event) => {
+            const tag = event.target && event.target.tagName ? event.target.tagName.toLowerCase() : '';
+            const isTyping =
+              tag === 'input' ||
+              tag === 'textarea' ||
+              tag === 'select' ||
+              Boolean(event.target && event.target.isContentEditable);
+            if (isTyping) return;
+
+            const isZ =
+              event.code === 'KeyZ' ||
+              (typeof event.key === 'string' && event.key.toLowerCase() === 'z');
+
+            if (event.ctrlKey && event.shiftKey && !event.altKey && isZ) {
+              event.preventDefault();
+              event.stopPropagation();
+              openAdminModal();
+            }
+          },
+          true
+        );
+        // --------------------------------------------------------
+
         function updateUI() {
           document.getElementById('footer-title').innerText = settings.title;
           document.getElementById('doc-title').innerText = settings.title ? `${settings.title} | Limpieza y Estética Automotriz` : 'Toxic Store';
@@ -845,16 +896,11 @@
           document.getElementById('btn-cancel-edit').style.display = 'none';
         }
 
-        document.getElementById('btn-admin-modal').addEventListener('click', () => {
-          document.getElementById('modal-admin').classList.add('active');
-          document.getElementById('admin-pin').focus();
-        });
+        if (adminBtn) {
+          adminBtn.addEventListener('click', openAdminModal);
+        }
 
-        document.getElementById('close-admin-modal').addEventListener('click', () => {
-          document.getElementById('modal-admin').classList.remove('active');
-          document.getElementById('admin-pin').value = '';
-          resetForm();
-        });
+        document.getElementById('close-admin-modal').addEventListener('click', closeAdminModal);
 
         window.verifyPin = function () {
           const pinInput = document.getElementById('admin-pin').value;
@@ -897,7 +943,7 @@
 
           alert('¡Ajustes guardados correctamente!');
           updateUI();
-          document.getElementById('modal-admin').classList.remove('active');
+          closeAdminModal();
           syncSupabase();
         });
 
